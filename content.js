@@ -99,6 +99,39 @@
   stylesheet.rel = "stylesheet";
   stylesheet.href = chrome.runtime.getURL("styles.css");
 
+  // UI polish overrides are bundled here so the larger panel and icon work even
+  // if the original stylesheet is cached by the extension/browser.
+  const polishStyle = document.createElement("style");
+  polishStyle.textContent = `
+    #ce-launcher { width: 58px !important; height: 58px !important; display:grid !important; place-items:center !important; border:1px solid rgba(255,255,255,.35) !important; box-shadow:0 12px 34px rgba(79,70,229,.38), inset 0 1px 0 rgba(255,255,255,.35) !important; background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#ec4899) !important; color:#fff !important; }
+    #ce-launcher svg { width:28px; height:28px; display:block; }
+    #ce-panel { width:min(820px, calc(100vw - 32px)) !important; height:min(840px, calc(100vh - 32px)) !important; max-width:calc(100vw - 24px) !important; max-height:calc(100vh - 24px) !important; overflow:hidden !important; }
+    .ce-header { min-height:76px !important; }
+    .ce-brand-icon { display:grid !important; place-items:center !important; width:44px !important; height:44px !important; border-radius:15px !important; background:linear-gradient(135deg,#6366f1,#a855f7 60%,#ec4899) !important; color:white !important; box-shadow:0 7px 20px rgba(99,102,241,.28) !important; }
+    .ce-tabs { display:grid !important; grid-template-columns:repeat(5,minmax(0,1fr)) !important; gap:7px !important; }
+    .ce-tab { min-width:0 !important; justify-content:center !important; gap:7px !important; padding:12px 7px !important; white-space:nowrap !important; }
+    .ce-tab-icon { font-size:17px !important; }
+    .ce-content { height:calc(100% - 130px) !important; overflow:auto !important; overscroll-behavior:contain !important; }
+    .ce-view { padding-bottom:18px !important; }
+    .ce-tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:14px !important; }
+    .ce-tool-card { min-width:0 !important; }
+    .ce-tool-card-wide { grid-column:1 / -1 !important; }
+    .ce-calc-keypad { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:10px; }
+    .ce-calc-key { min-height:42px; border:1px solid var(--border,rgba(148,163,184,.25)); border-radius:11px; background:var(--surface,rgba(148,163,184,.1)); color:var(--text,inherit); font:600 15px/1 inherit; cursor:pointer; transition:transform .12s ease,filter .12s ease; }
+    .ce-calc-key:hover { filter:brightness(1.12); transform:translateY(-1px); }
+    .ce-calc-key.operator { background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(168,85,247,.2)); }
+    .ce-calc-key.equals { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border-color:transparent; }
+    .ce-calc-key.danger { color:#f87171; }
+    #ce-calc-input { font-size:19px !important; font-weight:600 !important; letter-spacing:.2px; }
+    #ce-calc-result { min-height:22px; overflow-wrap:anywhere; }
+    @media (max-width:600px) {
+      #ce-panel { width:calc(100vw - 16px) !important; height:calc(100vh - 16px) !important; max-width:calc(100vw - 16px) !important; max-height:calc(100vh - 16px) !important; }
+      .ce-tab { flex-direction:column !important; gap:4px !important; font-size:11px !important; padding:8px 2px !important; }
+      .ce-tool-grid { grid-template-columns:minmax(0,1fr) !important; }
+      .ce-tool-card-wide { grid-column:auto !important; }
+    }
+  `;
+
   const root = document.createElement("div");
   root.id = "chat-everywhere-root";
   root.classList.toggle("ce-light", data.theme === "light");
@@ -108,7 +141,7 @@
   launcher.type = "button";
   launcher.title = "Toggle Chat Everywhere (Alt+Shift+C)";
   launcher.setAttribute("aria-label", "Toggle Chat Everywhere");
-  launcher.textContent = "✦";
+  launcher.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8 14.5 9.5 21.2 12l-6.7 2.5L12 21.2l-2.5-6.7L2.8 12l6.7-2.5L12 2.8Z" fill="currentColor"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z" fill="currentColor"/></svg>`;
 
   const panel = document.createElement("section");
   panel.id = "ce-panel";
@@ -137,13 +170,34 @@
       </div>
     </header>
 
-    <nav class="ce-tabs" aria-label="Workspace sections">
-      <button class="ce-tab active" data-tab="chats" title="Indigo & Violet Gradient"><span class="ce-tab-icon">💬</span>Chats</button>
-      <button class="ce-tab" data-tab="media" title="Sunset Rose Gradient"><span class="ce-tab-icon">🖼</span>Media</button>
-      <button class="ce-tab" data-tab="groups" title="Emerald Teal Gradient"><span class="ce-tab-icon">👥</span>Groups</button>
-      <button class="ce-tab" data-tab="shares" title="Sapphire Sky Gradient"><span class="ce-tab-icon">🔗</span>Shares</button>
-      <button class="ce-tab" data-tab="tools" title="Amber Flame Gradient"><span class="ce-tab-icon">⚡</span>Tools</button>
-    </nav>
+
+<nav class="ce-tabs" aria-label="Workspace sections">
+  <button class="ce-tab active" data-tab="chats" title="Chats">
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/chats.png')}" alt=""/>
+    <span>Chats</span>
+  </button>
+
+  <button class="ce-tab" data-tab="media" title="Media">
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/media.png')}" alt=""/>
+    <span>Media</span>
+  </button>
+
+  <button class="ce-tab" data-tab="groups" title="Groups">
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/groups.png')}" alt=""/>
+    <span>Groups</span>
+  </button>
+
+  <button class="ce-tab" data-tab="shares" title="Shares">
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/share.png')}" alt=""/>
+    <span>Shares</span>
+  </button>
+
+  <button class="ce-tab" data-tab="tools" title="Tools">
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/tools.png')}" alt=""/>
+    <span>Tools</span>
+  </button>
+</nav>
+
 
     <main class="ce-content">
       <!-- ========================================================
@@ -343,8 +397,30 @@
                 <p>Arithmetic, %, ^, sqrt()</p>
               </div>
             </div>
-            <input id="ce-calc-input" class="ce-input" placeholder="e.g. (150 * 1.12) - 25">
-            <div class="ce-row">
+            <input id="ce-calc-input" class="ce-input" inputmode="decimal" autocomplete="off" placeholder="Enter calculation (e.g. 150 × 1.12 - 25)" aria-label="Calculator expression">
+            <div class="ce-calc-keypad" aria-label="Calculator keypad">
+              <button type="button" class="ce-calc-key danger" data-action="calc-key" data-key="clear">AC</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key="(" >(</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key=")">)</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key="/">÷</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="7">7</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="8">8</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="9">9</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key="*">×</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="4">4</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="5">5</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="6">6</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key="-">−</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="1">1</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="2">2</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="3">3</button>
+              <button type="button" class="ce-calc-key operator" data-action="calc-key" data-key="+">+</button>
+              <button type="button" class="ce-calc-key danger" data-action="calc-key" data-key="backspace">⌫</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key="0">0</button>
+              <button type="button" class="ce-calc-key" data-action="calc-key" data-key=".">.</button>
+              <button type="button" class="ce-calc-key equals" data-action="tools-calculate">=</button>
+            </div>
+            <div class="ce-row" style="margin-top:8px;">
               <button class="ce-button ce-button-primary ce-grow" data-action="tools-calculate">Calculate</button>
               <button class="ce-button ce-grow" data-action="tools-calc-clear">Clear</button>
             </div>
@@ -436,6 +512,7 @@
   root.appendChild(launcher);
   root.appendChild(panel);
   shadow.appendChild(stylesheet);
+  shadow.appendChild(polishStyle);
   shadow.appendChild(root);
   document.documentElement.appendChild(host);
 
@@ -1474,6 +1551,48 @@
     }
   }
 
+  // Safe arithmetic parser: supports numbers, parentheses, + - * / % and ^.
+  // It never evaluates user input as JavaScript.
+  function evaluateArithmetic(expression) {
+    const input = String(expression || "").replace(/[×x]/gi, "*").replace(/÷/g, "/").replace(/−/g, "-").replace(/\s+/g, "");
+    if (!input || !/^[0-9.+*/%()\-^]+$/.test(input)) throw new Error("Use numbers and + − × ÷ % ^ ( ) only.");
+    const tokens = input.match(/(?:\d+\.?\d*|\.\d+)|[()+\-*/%^]/g) || [];
+    if (tokens.join("") !== input) throw new Error("Invalid expression.");
+    let pos = 0;
+    const peek = () => tokens[pos];
+    const take = () => tokens[pos++];
+    function primary() {
+      const t = peek();
+      if (t === "+" || t === "-") { take(); const v = primary(); return t === "-" ? -v : v; }
+      if (t === "(") {
+        take(); const value = addSub();
+        if (take() !== ")") throw new Error("Missing closing parenthesis.");
+        return value;
+      }
+      if (t === undefined || !/^\d*\.?\d+$/.test(t)) throw new Error("Expected a number.");
+      take(); return Number(t);
+    }
+    function power() { let v = primary(); if (peek() === "^") { take(); v = v ** power(); } return v; }
+    function mulDiv() {
+      let v = power();
+      while (["*", "/", "%"].includes(peek())) {
+        const op = take(), rhs = power();
+        if ((op === "/" || op === "%") && rhs === 0) throw new Error("Cannot divide by zero.");
+        v = op === "*" ? v * rhs : op === "/" ? v / rhs : v % rhs;
+      }
+      return v;
+    }
+    function addSub() {
+      let v = mulDiv();
+      while (peek() === "+" || peek() === "-") { const op = take(), rhs = mulDiv(); v = op === "+" ? v + rhs : v - rhs; }
+      return v;
+    }
+    const result = addSub();
+    if (pos !== tokens.length) throw new Error("Check the expression and parentheses.");
+    if (!Number.isFinite(result)) throw new Error("Result is outside the supported range.");
+    return Number.parseFloat(result.toPrecision(12));
+  }
+
   // === E. TOOLS MENU: 5 TOOLS HANDLERS ===
   function executeToolsMenuAction(action) {
     switch (action) {
@@ -1486,21 +1605,12 @@
           return;
         }
         try {
-          // Safe arithmetic evaluator
-          const sanitized = expr.replace(/\s+/g, "")
-            .replace(/sqrt\(/g, "Math.sqrt(")
-            .replace(/abs\(/g, "Math.abs(")
-            .replace(/\^/g, "**");
-
-          if (!/^[\d+\-*/().%Mathsqrtab,\s*]+$/.test(sanitized)) {
-            resEl.textContent = "Invalid characters. Use numbers and + − * / % ^ sqrt()";
-            return;
-          }
-          const answer = Function(`"use strict"; return (${sanitized});`)();
+          const answer = evaluateArithmetic(expr);
           resEl.textContent = `= ${answer}`;
-          data.calcHistory = [{ expr, res: answer }, ...(data.calcHistory || [])].slice(0, 5);
-        } catch {
-          resEl.textContent = "Syntax error in expression.";
+          data.calcHistory = [{ expr, res: answer, time: Date.now() }, ...(data.calcHistory || [])].slice(0, 10);
+          saveData();
+        } catch (error) {
+          resEl.textContent = error?.message || "Invalid calculation. Check your expression.";
         }
         break;
       }
@@ -1680,6 +1790,16 @@
   // -------------------------------------------------------------
   launcher.addEventListener("click", toggleWorkspace);
 
+  $("#ce-calc-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      executeToolsMenuAction("tools-calculate");
+    } else if (e.key === "Escape") {
+      $("#ce-calc-input").value = "";
+      $("#ce-calc-result").textContent = "Ready";
+    }
+  });
+
   panel.addEventListener("paste", async (e) => {
     const files = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith("image/"));
     if (!files.length) return;
@@ -1698,8 +1818,23 @@
       return;
     }
 
-    const action = btn.dataset.action;
+    const action = btn.dataset.action || "";
     const id = btn.dataset.id;
+
+    if (action === "calc-key") {
+      const input = $("#ce-calc-input");
+      const key = btn.dataset.key;
+      if (key === "clear") {
+        input.value = "";
+        $("#ce-calc-result").textContent = "Ready";
+      } else if (key === "backspace") {
+        input.value = input.value.slice(0, -1);
+      } else {
+        input.value += key;
+      }
+      input.focus();
+      return;
+    }
 
     // Header actions
     if (action === "close") {

@@ -1,0 +1,1469 @@
+/* Chat Everywhere — Modern Glassmorphism Workspace with Gradient Menus */
+
+:host {
+  all: initial;
+}
+
+#chat-everywhere-root {
+  --ce-bg: rgba(14, 18, 36, 0.94);
+  --ce-panel: rgba(255, 255, 255, 0.065);
+  --ce-panel-hover: rgba(255, 255, 255, 0.12);
+  --ce-panel-active: rgba(255, 255, 255, 0.16);
+  --ce-border: rgba(255, 255, 255, 0.13);
+  --ce-border-hover: rgba(255, 255, 255, 0.28);
+  --ce-text: #f8fafc;
+  --ce-text-dim: #cbd5e1;
+  --ce-muted: #94a3b8;
+  --ce-radius: 18px;
+  --ce-radius-sm: 11px;
+  --ce-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+
+  /* ========================================================
+     GRADIENT PALETTE FOR EVERY MENU
+     ======================================================== */
+  /* Chats: Vibrant Indigo -> Violet -> Fuchsia */
+  --grad-chats: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+  --grad-chats-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(217, 70, 239, 0.14));
+  --accent-chats: #818cf8;
+  --glow-chats: rgba(99, 102, 241, 0.4);
+
+  /* Media: Neon Rose -> Sunset Pink -> Amber Peach */
+  --grad-media: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #fb923c 100%);
+  --grad-media-soft: linear-gradient(135deg, rgba(244, 63, 94, 0.22), rgba(251, 146, 60, 0.14));
+  --accent-media: #fb7185;
+  --glow-media: rgba(244, 63, 94, 0.4);
+
+  /* Groups: Emerald -> Mint Teal -> Electric Cyan */
+  --grad-groups: linear-gradient(135deg, #10b981 0%, #0d9488 50%, #06b6d4 100%);
+  --grad-groups-soft: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(6, 182, 212, 0.14));
+  --accent-groups: #34d399;
+  --glow-groups: rgba(16, 185, 129, 0.4);
+
+  /* Shares: Sky Blue -> Sapphire -> Cobalt Indigo */
+  --grad-shares: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #6366f1 100%);
+  --grad-shares-soft: linear-gradient(135deg, rgba(14, 165, 233, 0.22), rgba(99, 102, 241, 0.14));
+  --accent-shares: #38bdf8;
+  --glow-shares: rgba(14, 165, 233, 0.4);
+
+  /* Tools: Golden Amber -> Fire Orange -> Crimson */
+  --grad-tools: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%);
+  --grad-tools-soft: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(239, 68, 68, 0.14));
+  --accent-tools: #fbbf24;
+  --glow-tools: rgba(245, 158, 11, 0.4);
+
+  /* Omni Spectrum (Launcher / Global) */
+  --grad-spectrum: linear-gradient(135deg, #6366f1 0%, #ec4899 28%, #10b981 55%, #0ea5e9 78%, #f59e0b 100%);
+
+  color: var(--ce-text);
+  font-family: var(--ce-font);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color-scheme: dark;
+}
+
+#chat-everywhere-root *,
+#chat-everywhere-root *::before,
+#chat-everywhere-root *::after {
+  box-sizing: border-box;
+}
+
+#chat-everywhere-root button,
+#chat-everywhere-root input,
+#chat-everywhere-root textarea,
+#chat-everywhere-root select {
+  font: inherit;
+}
+
+#chat-everywhere-root button {
+  cursor: pointer;
+}
+
+/* ========================================================
+   3D GLOSSY FLOATING LAUNCHER (MATCHING USER REFERENCE)
+   ======================================================== */
+#ce-launcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 2147483647;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 14px 28px rgba(2, 132, 199, 0.52)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.28s ease;
+  animation: ce-float-bubble 3.8s ease-in-out infinite;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#ce-launcher:hover {
+  transform: translateY(-7px) scale(1.1) rotate(-3deg);
+  filter: drop-shadow(0 20px 38px rgba(14, 165, 233, 0.72)) drop-shadow(0 6px 14px rgba(0, 0, 0, 0.32));
+}
+
+#ce-launcher:active {
+  transform: translateY(1px) scale(0.94);
+  transition-duration: 0.1s;
+}
+
+#ce-launcher.ce-open {
+  animation: none;
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 16px 32px rgba(99, 102, 241, 0.65));
+}
+
+.ce-3d-bubble-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-3d-bubble-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#ce-launcher:hover .ce-3d-bubble-img {
+  transform: scale(1.04);
+}
+
+.ce-launcher-close-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.55);
+  border: 1.5px solid #ffffff;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+#ce-launcher.ce-open .ce-launcher-close-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes ce-float-bubble {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ========================================================
+   MAIN PANEL WITH DYNAMIC MENU GRADIENT AMBIENCE
+   ======================================================== */
+#ce-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 98px;
+  z-index: 2147483646;
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  height: min(730px, calc(100vh - 120px));
+  overflow: hidden;
+  border: 1px solid var(--ce-border);
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(99, 102, 241, 0.22), transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(217, 70, 239, 0.15), transparent 50%),
+    var(--ce-bg);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(32px);
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  animation: ce-panel-enter 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#ce-panel.ce-hidden {
+  display: none;
+}
+
+@keyframes ce-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dynamic Ambient Glow per Menu */
+#ce-panel[data-active-menu="chats"] {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(99, 102, 241, 0.26), transparent 48%),
+    radial-gradient(circle at 90% 92%, rgba(217, 70, 239, 0.16), transparent 48%),
+    var(--ce-bg);
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 25px rgba(99, 102, 241, 0.18);
+}
+
+#ce-panel[data-active-menu="media"] {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(244, 63, 94, 0.26), transparent 48%),
+    radial-gradient(circle at 90% 92%, rgba(251, 146, 60, 0.16), transparent 48%),
+    var(--ce-bg);
+  border-color: rgba(244, 63, 94, 0.35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 25px rgba(244, 63, 94, 0.18);
+}
+
+#ce-panel[data-active-menu="groups"] {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(16, 185, 129, 0.26), transparent 48%),
+    radial-gradient(circle at 90% 92%, rgba(6, 182, 212, 0.16), transparent 48%),
+    var(--ce-bg);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 25px rgba(16, 185, 129, 0.18);
+}
+
+#ce-panel[data-active-menu="shares"] {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(14, 165, 233, 0.26), transparent 48%),
+    radial-gradient(circle at 90% 92%, rgba(99, 102, 241, 0.16), transparent 48%),
+    var(--ce-bg);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 25px rgba(14, 165, 233, 0.18);
+}
+
+#ce-panel[data-active-menu="tools"] {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(245, 158, 11, 0.26), transparent 48%),
+    radial-gradient(circle at 90% 92%, rgba(239, 68, 68, 0.16), transparent 48%),
+    var(--ce-bg);
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 25px rgba(245, 158, 11, 0.18);
+}
+
+/* ========================================================
+   HEADER & BRAND
+   ======================================================== */
+.ce-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--ce-border);
+}
+
+.ce-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ce-brand-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  filter: drop-shadow(0 6px 14px rgba(2, 132, 199, 0.45));
+}
+
+.ce-brand-3d-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.ce-brand-title {
+  margin: 0;
+  color: var(--ce-text);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ce-brand-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  color: white;
+  background: var(--grad-spectrum);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ce-brand-subtitle {
+  margin: 2px 0 0;
+  color: var(--ce-muted);
+  font-size: 11px;
+}
+
+.ce-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#chat-everywhere-root .ce-icon-button {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: 1px solid var(--ce-border);
+  border-radius: 11px;
+  color: var(--ce-muted);
+  background: var(--ce-panel);
+  transition: all 0.18s ease;
+}
+
+#chat-everywhere-root .ce-icon-button:hover {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--ce-panel-hover);
+  transform: translateY(-1px);
+}
+
+/* ========================================================
+   NAVIGATION TABS WITH DISTINCTIVE MENU GRADIENTS
+   ======================================================== */
+.ce-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 12px 16px 8px;
+}
+
+#chat-everywhere-root .ce-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 9px 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: var(--ce-muted);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ce-tab-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+#chat-everywhere-root .ce-tab:hover {
+  color: white;
+  background: var(--ce-panel-hover);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Gradient Tabs per Menu */
+#chat-everywhere-root .ce-tab[data-tab="chats"].active {
+  color: #ffffff;
+  background: var(--grad-chats);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px var(--glow-chats);
+}
+
+#chat-everywhere-root .ce-tab[data-tab="media"].active {
+  color: #ffffff;
+  background: var(--grad-media);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px var(--glow-media);
+}
+
+#chat-everywhere-root .ce-tab[data-tab="groups"].active {
+  color: #ffffff;
+  background: var(--grad-groups);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px var(--glow-groups);
+}
+
+#chat-everywhere-root .ce-tab[data-tab="shares"].active {
+  color: #ffffff;
+  background: var(--grad-shares);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px var(--glow-shares);
+}
+
+#chat-everywhere-root .ce-tab[data-tab="tools"].active {
+  color: #ffffff;
+  background: var(--grad-tools);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px var(--glow-tools);
+}
+
+/* ========================================================
+   CONTENT CONTAINER & VIEWS
+   ======================================================== */
+.ce-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px 16px 16px;
+}
+
+.ce-view {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  padding-right: 2px;
+}
+
+.ce-view.active {
+  display: flex;
+}
+
+.ce-view::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ce-view::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================================
+   VIEW HEADING & GRADIENT ACCENTS
+   ======================================================== */
+.ce-view-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.ce-view-heading h2 {
+  margin: 0;
+  color: var(--ce-text);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ce-view-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+[data-view="chats"] .ce-view-badge { background: var(--grad-chats); box-shadow: 0 3px 10px var(--glow-chats); }
+[data-view="media"] .ce-view-badge { background: var(--grad-media); box-shadow: 0 3px 10px var(--glow-media); }
+[data-view="groups"] .ce-view-badge { background: var(--grad-groups); box-shadow: 0 3px 10px var(--glow-groups); }
+[data-view="shares"] .ce-view-badge { background: var(--grad-shares); box-shadow: 0 3px 10px var(--glow-shares); }
+[data-view="tools"] .ce-view-badge { background: var(--grad-tools); box-shadow: 0 3px 10px var(--glow-tools); }
+
+/* ========================================================
+   MENU 5 TOOLS DOCK / TOOLBAR (5 TOOLS IN EVERY MENU)
+   ======================================================== */
+.ce-menu-tools-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--ce-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ce-menu-tools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ce-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.ce-tools-count-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1.5px 6.5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.ce-toolbar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+
+#chat-everywhere-root .ce-tool-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px 3px;
+  overflow: hidden;
+  border: 1px solid var(--ce-border);
+  border-radius: 12px;
+  color: var(--ce-text-dim);
+  background: var(--ce-panel);
+  font-size: 10px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.ce-chip-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+#chat-everywhere-root .ce-tool-chip:hover {
+  color: white;
+  transform: translateY(-2px);
+  background: var(--ce-panel-hover);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Menu-Specific Gradient Highlights for the 5 Tools */
+[data-view="chats"] .ce-tool-chip:hover {
+  border-color: var(--accent-chats);
+  box-shadow: 0 4px 14px var(--glow-chats);
+}
+[data-view="chats"] .ce-tool-chip.active {
+  background: var(--grad-chats-soft);
+  border-color: var(--accent-chats);
+  color: white;
+}
+
+[data-view="media"] .ce-tool-chip:hover {
+  border-color: var(--accent-media);
+  box-shadow: 0 4px 14px var(--glow-media);
+}
+[data-view="media"] .ce-tool-chip.active {
+  background: var(--grad-media-soft);
+  border-color: var(--accent-media);
+  color: white;
+}
+
+[data-view="groups"] .ce-tool-chip:hover {
+  border-color: var(--accent-groups);
+  box-shadow: 0 4px 14px var(--glow-groups);
+}
+[data-view="groups"] .ce-tool-chip.active {
+  background: var(--grad-groups-soft);
+  border-color: var(--accent-groups);
+  color: white;
+}
+
+[data-view="shares"] .ce-tool-chip:hover {
+  border-color: var(--accent-shares);
+  box-shadow: 0 4px 14px var(--glow-shares);
+}
+[data-view="shares"] .ce-tool-chip.active {
+  background: var(--grad-shares-soft);
+  border-color: var(--accent-shares);
+  color: white;
+}
+
+[data-view="tools"] .ce-tool-chip:hover {
+  border-color: var(--accent-tools);
+  box-shadow: 0 4px 14px var(--glow-tools);
+}
+[data-view="tools"] .ce-tool-chip.active {
+  background: var(--grad-tools-soft);
+  border-color: var(--accent-tools);
+  color: white;
+}
+
+/* ========================================================
+   INTERACTIVE TOOL DRAWER / MODAL CARD (FOR ANY OF THE 5 TOOLS)
+   ======================================================== */
+.ce-tool-drawer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px 15px;
+  border: 1px solid var(--ce-border);
+  border-radius: var(--ce-radius);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: ce-slide-down 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ce-tool-drawer.ce-hidden {
+  display: none !important;
+}
+
+@keyframes ce-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ce-tool-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ce-tool-drawer-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--ce-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ce-tool-drawer-close {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--ce-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ce-muted);
+}
+
+.ce-tool-drawer-close:hover {
+  color: white;
+  background: var(--ce-panel-hover);
+}
+
+/* ========================================================
+   INPUTS & CONTROLS
+   ======================================================== */
+.ce-search,
+.ce-input,
+.ce-select,
+.ce-textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--ce-border);
+  border-radius: 13px;
+  outline: none;
+  color: var(--ce-text);
+  background: rgba(255, 255, 255, 0.055);
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ce-search,
+.ce-input,
+.ce-select {
+  min-height: 38px;
+  padding: 8px 12px;
+}
+
+.ce-textarea {
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.ce-search::placeholder,
+.ce-input::placeholder,
+.ce-textarea::placeholder {
+  color: #8892b0;
+}
+
+.ce-search:focus,
+.ce-input:focus,
+.ce-select:focus,
+.ce-textarea:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.ce-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ce-row > * {
+  min-width: 0;
+}
+
+.ce-grow {
+  flex: 1;
+}
+
+/* ========================================================
+   BUTTONS
+   ======================================================== */
+#chat-everywhere-root .ce-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid var(--ce-border);
+  border-radius: 11px;
+  color: var(--ce-text);
+  background: var(--ce-panel);
+  font-size: 11.5px;
+  font-weight: 650;
+  transition: all 0.18s ease;
+}
+
+#chat-everywhere-root .ce-button:hover {
+  transform: translateY(-1px);
+  background: var(--ce-panel-hover);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+#chat-everywhere-root .ce-button:active {
+  transform: translateY(0);
+}
+
+#chat-everywhere-root .ce-button-primary {
+  border-color: transparent;
+  color: white;
+  background: var(--grad-spectrum);
+  box-shadow: 0 5px 16px rgba(99, 102, 241, 0.28);
+}
+
+[data-view="chats"] #chat-everywhere-root .ce-button-primary { background: var(--grad-chats); box-shadow: 0 5px 16px var(--glow-chats); }
+[data-view="media"] #chat-everywhere-root .ce-button-primary { background: var(--grad-media); box-shadow: 0 5px 16px var(--glow-media); }
+[data-view="groups"] #chat-everywhere-root .ce-button-primary { background: var(--grad-groups); box-shadow: 0 5px 16px var(--glow-groups); }
+[data-view="shares"] #chat-everywhere-root .ce-button-primary { background: var(--grad-shares); box-shadow: 0 5px 16px var(--glow-shares); }
+[data-view="tools"] #chat-everywhere-root .ce-button-primary { background: var(--grad-tools); box-shadow: 0 5px 16px var(--glow-tools); }
+
+#chat-everywhere-root .ce-button-danger {
+  color: #fda4af;
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+#chat-everywhere-root .ce-button-danger:hover {
+  background: rgba(244, 63, 94, 0.2);
+}
+
+#chat-everywhere-root .ce-small-button {
+  padding: 4px 8px;
+  border: 1px solid var(--ce-border);
+  border-radius: 9px;
+  color: var(--ce-text-dim);
+  background: var(--ce-panel);
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.16s ease;
+}
+
+#chat-everywhere-root .ce-small-button:hover {
+  color: white;
+  background: var(--ce-panel-hover);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ========================================================
+   CARDS & LISTS
+   ======================================================== */
+.ce-card {
+  padding: 13px;
+  border: 1px solid var(--ce-border);
+  border-radius: var(--ce-radius);
+  background: var(--ce-panel);
+}
+
+.ce-card-title {
+  margin: 0 0 4px;
+  color: var(--ce-text);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.ce-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--ce-muted);
+  font-size: 11.5px;
+}
+
+.ce-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ce-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--ce-border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: all 0.16s ease;
+}
+
+.ce-list-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.ce-list-item-active {
+  border-color: var(--accent-chats);
+  background: var(--grad-chats-soft);
+}
+
+.ce-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.ce-item-title {
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
+  color: var(--ce-text);
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.ce-item-subtitle {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--ce-muted);
+  font-size: 11px;
+}
+
+.ce-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.ce-empty {
+  padding: 24px 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: var(--ce-radius);
+  color: var(--ce-muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+.ce-empty-icon {
+  margin-bottom: 6px;
+  font-size: 24px;
+}
+
+/* ========================================================
+   CHAT VIEW SPECIFICS
+   ======================================================== */
+.ce-chat-messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  min-height: 140px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px 2px;
+  transition: all 0.2s ease;
+}
+
+.ce-chat-messages.ce-drag-active {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-radius: 14px;
+  box-shadow: 0 0 0 2px var(--accent-chats) inset;
+}
+
+.ce-message {
+  max-width: 90%;
+  padding: 9px 12px;
+  border: 1px solid var(--ce-border);
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+  color: var(--ce-text);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+/* Draggable Web & Media Links in Chat */
+.ce-draggable-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-chats);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 650;
+  cursor: grab !important;
+  user-select: text;
+  -webkit-user-drag: element;
+  padding: 1px 4px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: all 0.18s ease;
+}
+
+.ce-draggable-link:hover {
+  color: #ffffff;
+  background: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 2px 8px var(--glow-chats);
+}
+
+.ce-draggable-link:active {
+  cursor: grabbing !important;
+}
+
+.ce-link-drag-icon {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+/* Rich Draggable YouTube Cards in Chat */
+.ce-yt-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ce-yt-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 13px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.22);
+  cursor: grab !important;
+  -webkit-user-drag: element;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ce-yt-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.8);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+}
+
+.ce-yt-card:active {
+  cursor: grabbing !important;
+}
+
+.ce-yt-thumb-wrap {
+  position: relative;
+  width: 100%;
+  height: 125px;
+  background: #000;
+  overflow: hidden;
+}
+
+.ce-yt-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ce-yt-play-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 30px;
+  background: rgba(220, 38, 38, 0.95);
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.ce-yt-card-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ce-yt-card-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 750;
+  color: #f8fafc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ce-yt-drag-pill {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.ce-message.mine {
+  align-self: flex-end;
+  color: white;
+  border-color: rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.55), rgba(139, 92, 246, 0.45));
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+}
+
+.ce-message.ai-reply {
+  border-color: rgba(217, 70, 239, 0.35);
+  background: linear-gradient(135deg, rgba(217, 70, 239, 0.15), rgba(99, 102, 241, 0.15));
+}
+
+.ce-message-time {
+  display: block;
+  margin-top: 4px;
+  color: var(--ce-muted);
+  font-size: 9px;
+}
+
+.ce-message.mine .ce-message-time {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ce-message-compose {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ce-border);
+}
+
+.ce-message-compose textarea {
+  flex: 1;
+  min-height: 40px;
+  max-height: 95px;
+  resize: vertical;
+}
+
+/* ========================================================
+   MEDIA VIEW SPECIFICS
+   ======================================================== */
+.ce-media-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  padding: 4px 2px;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.ce-media-grid.ce-drag-active {
+  background: rgba(244, 63, 94, 0.12) !important;
+  box-shadow: 0 0 0 2px var(--accent-media) inset;
+}
+
+.ce-media-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ce-border);
+  border-radius: 14px;
+  background: var(--ce-panel);
+  transition: all 0.2s ease;
+}
+
+.ce-media-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-media);
+  box-shadow: 0 6px 18px var(--glow-media);
+}
+
+.ce-media-card-link {
+  display: block;
+  text-decoration: none;
+  cursor: grab !important;
+  -webkit-user-drag: element;
+  position: relative;
+  background: #000;
+}
+
+.ce-media-card-link:active {
+  cursor: grabbing !important;
+}
+
+.ce-media-yt-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2.5px 7px;
+  border-radius: 6px;
+  background: #dc2626;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  letter-spacing: 0.3px;
+}
+
+.ce-media-drag-hint {
+  margin: 0 0 7px;
+  font-size: 9.5px;
+  color: var(--ce-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ce-media-card img {
+  display: block;
+  width: 100%;
+  height: 105px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ce-media-info {
+  padding: 8px 9px;
+}
+
+.ce-media-name {
+  margin: 0 0 6px;
+  overflow: hidden;
+  color: var(--ce-text);
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ce-palette-container {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.ce-palette-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.ce-palette-swatch:hover {
+  transform: scale(1.15);
+}
+
+/* ========================================================
+   GROUPS VIEW SPECIFICS
+   ======================================================== */
+.ce-group-badge {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--grad-groups-soft);
+  color: var(--accent-groups);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ce-announcement-banner {
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: var(--grad-groups-soft);
+  border: 1px solid var(--accent-groups);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ce-announcement-title {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: var(--accent-groups);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ce-announcement-text {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ce-text);
+}
+
+/* ========================================================
+   SHARES VIEW SPECIFICS & QR CODE MODAL
+   ======================================================== */
+.ce-qr-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  border: 1px solid var(--ce-border);
+}
+
+.ce-qr-frame {
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.ce-qr-frame svg,
+.ce-qr-frame canvas {
+  display: block;
+  width: 160px;
+  height: 160px;
+}
+
+/* ========================================================
+   TOOLS VIEW (5 INTEGRATED TOOL CARDS)
+   ======================================================== */
+.ce-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ce-tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--ce-border);
+  border-radius: 16px;
+  background: var(--ce-panel);
+  transition: all 0.2s ease;
+}
+
+.ce-tool-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 6px 20px var(--glow-tools);
+}
+
+.ce-tool-card-wide {
+  grid-column: 1 / -1;
+}
+
+.ce-tool-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ce-tool-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 11px;
+  background: var(--grad-tools-soft);
+  color: var(--accent-tools);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.ce-tool-card h3 {
+  margin: 0;
+  color: var(--ce-text);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.ce-tool-card p {
+  margin: 0;
+  color: var(--ce-muted);
+  font-size: 11px;
+  white-space: pre-wrap;
+}
+
+.ce-timer-clock {
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--accent-tools);
+  letter-spacing: 2px;
+  margin: 4px 0;
+  text-shadow: 0 2px 10px var(--glow-tools);
+}
+
+.ce-status {
+  min-height: 18px;
+  padding: 4px 6px;
+  color: var(--accent-chats);
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+[data-active-menu="chats"] .ce-status { color: var(--accent-chats); }
+[data-active-menu="media"] .ce-status { color: var(--accent-media); }
+[data-active-menu="groups"] .ce-status { color: var(--accent-groups); }
+[data-active-menu="shares"] .ce-status { color: var(--accent-shares); }
+[data-active-menu="tools"] .ce-status { color: var(--accent-tools); }
+
+/* ========================================================
+   LIGHT THEME MODE
+   ======================================================== */
+#chat-everywhere-root.ce-light {
+  --ce-bg: rgba(248, 250, 252, 0.94);
+  --ce-panel: rgba(15, 23, 42, 0.05);
+  --ce-panel-hover: rgba(15, 23, 42, 0.09);
+  --ce-panel-active: rgba(15, 23, 42, 0.13);
+  --ce-border: rgba(15, 23, 42, 0.12);
+  --ce-border-hover: rgba(15, 23, 42, 0.25);
+  --ce-text: #0f172a;
+  --ce-text-dim: #334155;
+  --ce-muted: #64748b;
+  color-scheme: light;
+}
+
+#chat-everywhere-root.ce-light #ce-panel {
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+#chat-everywhere-root.ce-light .ce-search,
+#chat-everywhere-root.ce-light .ce-input,
+#chat-everywhere-root.ce-light .ce-select,
+#chat-everywhere-root.ce-light .ce-textarea {
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+}
+
+#chat-everywhere-root.ce-light .ce-message {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+}
+
+#chat-everywhere-root.ce-light .ce-message.mine {
+  color: #ffffff;
+}
+
+#chat-everywhere-root.ce-light .ce-card,
+#chat-everywhere-root.ce-light .ce-list-item,
+#chat-everywhere-root.ce-light .ce-tool-card,
+#chat-everywhere-root.ce-light .ce-menu-tools-wrapper,
+#chat-everywhere-root.ce-light .ce-tool-drawer {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN (MOBILE / COMPACT)
+   ======================================================== */
+@media (max-width: 480px) {
+  #ce-panel {
+    right: 10px;
+    bottom: 84px;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 105px);
+    max-height: 720px;
+    border-radius: 22px;
+  }
+
+  #ce-launcher {
+    right: 14px;
+    bottom: 14px;
+    width: 62px;
+    height: 62px;
+  }
+
+  .ce-content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .ce-toolbar {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .ce-tool-chip {
+    padding: 5px 2px;
+    font-size: 9.5px;
+  }
+}

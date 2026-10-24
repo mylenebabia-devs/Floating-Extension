@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Chat Everywhere",
+  "version": "3.2.0",
+  "description": "A floating glassmorphism workspace with radiant gradient menus for chats, media, groups, shares, and five functional tools inside every menu.",
+  "permissions": [
+    "storage",
+    "clipboardRead",
+    "clipboardWrite",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "styles.css",
+        "style.css",
+        "floating-bubble.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "Open Chat Everywhere"
+  }
+}

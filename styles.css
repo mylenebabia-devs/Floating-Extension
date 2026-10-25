@@ -1414,17 +1414,33 @@
 }
 
 
+/* General text areas */
 .ce-textarea {
-
-  min-height: 80px;
-
-  padding: 10px 12px;
-
+  min-height: 200px;
+  height: 200px;
+  padding: 12px;
   resize: vertical;
-
+  line-height: 1.5;
 }
 
+/* Quick Notes: make the writing box bigger */
+#chat-everywhere-root #ce-notes {
+  display: block !important;
+  width: 100% !important;
+  min-height: 420px !important;
+  height: 420px !important;
+  max-height: none !important;
+  box-sizing: border-box !important;
+  padding: 14px;
+  resize: vertical;
+  line-height: 1.6;
+  overflow-y: auto;
+}
 
+#chat-everywhere-root #ce-notes::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
 
 .ce-search::placeholder,
 
@@ -4532,4 +4548,406 @@
   #ce-panel .ce-tabs { padding: 10px 10px 7px !important; gap: 4px !important; }
   #ce-panel .ce-tabs .ce-tab { min-height: 60px !important; padding: 7px 2px !important; }
   #ce-panel .ce-tabs .ce-tab img.ce-menu-image { width: 22px !important; height: 22px !important; min-width: 22px !important; min-height: 22px !important; max-width: 22px !important; max-height: 22px !important; flex-basis: 22px !important; }
+}
+
+
+/* h2 icons: conversations, workspace, media, power utilities */
+
+.ce-view-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ce-view-heading h2 .ce-heading-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin: 0;
+  position: static;
+  vertical-align: unset;
+}
+/* Custom Focus Timer */
+#chat-everywhere-root .ce-focus-timer-card {
+  gap: 14px;
+  padding: 20px;
+  min-width: 0;
+}
+
+#chat-everywhere-root .ce-timer-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 130px;
+  margin: 4px 0;
+  padding: 18px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.14),
+    rgba(239, 68, 68, 0.12)
+  );
+  color: var(--accent-tools);
+  font-size: clamp(44px, 6vw, 64px);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: 3px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+#chat-everywhere-root .ce-timer-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#chat-everywhere-root .ce-timer-custom label {
+  color: var(--ce-text-dim);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#chat-everywhere-root #ce-timer-minutes {
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#chat-everywhere-root .ce-timer-presets {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#chat-everywhere-root .ce-timer-presets button {
+  min-height: 38px;
+  font-size: 11px;
+}
+
+#chat-everywhere-root .ce-focus-timer-card .ce-button {
+  min-height: 42px;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  #chat-everywhere-root .ce-timer-clock {
+    min-height: 110px;
+    font-size: 46px;
+  }
+
+  #chat-everywhere-root .ce-focus-timer-card {
+    padding: 15px;
+  }
+}
+
+/* ===== PREMIUM HEADER BUTTONS ===== */
+#chat-everywhere-root .ce-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255,255,255,.32) !important;
+  border-radius: 15px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #343b59, #252940) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,.25),
+              inset 0 1px 0 rgba(255,255,255,.12) !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  transition: all .2s ease !important;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899) !important;
+  border-color: rgba(255,255,255,.65) !important;
+  box-shadow: 0 8px 22px rgba(139,92,246,.4) !important;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button:active {
+  transform: scale(.94) !important;
+}
+
+/* Make the close button stand out */
+#chat-everywhere-root .ce-header-actions
+.ce-icon-button[data-action="close"] {
+  background: linear-gradient(135deg, #fb7185, #e11d48) !important;
+  border-color: rgba(255,255,255,.4) !important;
+}
+
+#chat-everywhere-root .ce-header-actions
+.ce-icon-button[data-action="close"]:hover {
+  background: linear-gradient(135deg, #ef4444, #be123c) !important;
+  box-shadow: 0 8px 22px rgba(244,63,94,.4) !important;
+}
+
+/* Theme button */
+#chat-everywhere-root .ce-header-actions
+.ce-icon-button[data-action="theme"] {
+  background: linear-gradient(135deg, #6366f1, #7c3aed) !important;
+}
+
+#chat-everywhere-root .ce-header-actions
+.ce-icon-button[data-action="theme"]:hover {
+  background: linear-gradient(135deg, #818cf8, #c084fc) !important;
+}
+
+@media (max-width: 480px) {
+  #chat-everywhere-root .ce-header-actions .ce-icon-button {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* ================================
+   HEADER BUTTONS — DARK MODE & CLOSE
+================================ */
+
+#chat-everywhere-root .ce-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button:hover {
+    background: rgba(139, 92, 246, 0.22);
+    border-color: rgba(167, 139, 250, 0.7);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.22);
+    transform: translateY(-2px);
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button:active {
+    transform: scale(0.94);
+}
+
+/* Make the X button more visible */
+#chat-everywhere-root .ce-header-actions .ce-icon-button[data-action="close"] {
+    color: #fca5a5;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+#chat-everywhere-root .ce-header-actions .ce-icon-button[data-action="close"]:hover {
+    color: #ffffff;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #f87171;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+/* Light mode button appearance */
+#chat-everywhere-root.ce-light .ce-header-actions .ce-icon-button {
+    color: #334155;
+    background: rgba(15, 23, 42, 0.05);
+    border-color: rgba(15, 23, 42, 0.14);
+}
+
+#chat-everywhere-root.ce-light .ce-header-actions .ce-icon-button:hover {
+    color: #4f46e5;
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+#chat-everywhere-root.ce-light .ce-header-actions .ce-icon-button[data-action="close"]:hover {
+    color: #ffffff;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #f87171;
+}
+
+/* Keyboard accessibility */
+#chat-everywhere-root .ce-header-actions .ce-icon-button:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 3px;
+}
+
+/* Prevent buttons from shrinking */
+#chat-everywhere-root .ce-header-actions .ce-icon-button {
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   CHAT EVERYWHERE — PREMIUM HEADER BUTTONS
+========================================== */
+
+#chat-everywhere-root .ce-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+/* Dark mode / moon button */
+#chat-everywhere-root .ce-header-actions button[data-action="theme"] {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(196, 181, 253, 0.35);
+    border-radius: 13px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(139, 92, 246, 0.22),
+        rgba(99, 102, 241, 0.12)
+    );
+
+    color: #ddd6fe;
+    font-size: 0;
+    cursor: pointer;
+
+    transition: all 0.22s ease;
+}
+
+/* Moon icon */
+#chat-everywhere-root .ce-header-actions button[data-action="theme"]::before {
+    content: "☾";
+    font-family: Arial, sans-serif;
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+#chat-everywhere-root .ce-header-actions button[data-action="theme"]:hover {
+    background: linear-gradient(145deg, #8b5cf6, #6366f1);
+    color: #ffffff;
+    border-color: rgba(221, 214, 254, 0.75);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25);
+    transform: translateY(-1px);
+}
+
+#chat-everywhere-root .ce-header-actions button[data-action="theme"]:active {
+    transform: scale(0.95);
+}
+
+/* Close button */
+#chat-everywhere-root .ce-header-actions button[data-action="close"] {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(251, 113, 133, 0.3);
+    border-radius: 13px;
+
+    background: rgba(244, 63, 94, 0.09);
+    color: #fda4af;
+
+    font-family: Arial, sans-serif;
+    font-size: 0;
+    font-weight: 400;
+    line-height: 1;
+
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
+
+/* Clean close symbol */
+#chat-everywhere-root .ce-header-actions button[data-action="close"]::before {
+    content: "×";
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+#chat-everywhere-root .ce-header-actions button[data-action="close"]:hover {
+    background: #e94560;
+    border-color: #fb7185;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.22);
+    transform: translateY(-1px);
+}
+
+#chat-everywhere-root .ce-header-actions button[data-action="close"]:active {
+    transform: scale(0.95);
+}
+
+/* Light mode */
+#chat-everywhere-root.ce-light
+.ce-header-actions button[data-action="theme"] {
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+#chat-everywhere-root.ce-light
+.ce-header-actions button[data-action="theme"]::before {
+    content: "☀";
+    font-size: 22px;
+}
+
+#chat-everywhere-root.ce-light
+.ce-header-actions button[data-action="theme"]:hover {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+#chat-everywhere-root.ce-light
+.ce-header-actions button[data-action="close"] {
+    background: rgba(244, 63, 94, 0.06);
+    color: #e11d48;
+}
+
+#chat-everywhere-root.ce-light
+.ce-header-actions button[data-action="close"]:hover {
+    background: #e94560;
+    color: #ffffff;
+}
+
+/* Keep both buttons aligned */
+#chat-everywhere-root .ce-header-actions button[data-action="theme"],
+#chat-everywhere-root .ce-header-actions button[data-action="close"] {
+    flex-shrink: 0;
+    box-sizing: border-box;
 }

@@ -103,6 +103,7 @@
   // if the original stylesheet is cached by the extension/browser.
   const polishStyle = document.createElement("style");
   polishStyle.textContent = `
+  .ce-tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:14px !important; }
     #ce-launcher { width: 58px !important; height: 58px !important; display:grid !important; place-items:center !important; border:1px solid rgba(255,255,255,.35) !important; box-shadow:0 12px 34px rgba(79,70,229,.38), inset 0 1px 0 rgba(255,255,255,.35) !important; background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#ec4899) !important; color:#fff !important; }
     #ce-launcher svg { width:28px; height:28px; display:block; }
     #ce-panel { width:min(820px, calc(100vw - 32px)) !important; height:min(840px, calc(100vh - 32px)) !important; max-width:calc(100vw - 24px) !important; max-height:calc(100vh - 24px) !important; overflow:hidden !important; }
@@ -165,15 +166,17 @@
         </div>
       </div>
       <div class="ce-header-actions">
-        <button class="ce-icon-button" data-action="theme" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">◐</button>
-        <button class="ce-icon-button" data-action="close" title="Minimize Workspace" aria-label="Minimize Workspace">×</button>
+        <button class="ce-icon-button" data-action="theme"
+        title="Toggle Light/Dark Theme" aria-label="Toggle Theme">☾</button>
+      <button class="ce-icon-button" data-action="close"
+        title="Minimize Workspace" aria-label="Minimize Workspace">×</button>
       </div>
-    </header>
+      </header>
 
 
 <nav class="ce-tabs" aria-label="Workspace sections">
   <button class="ce-tab active" data-tab="chats" title="Chats">
-    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/chats.png')}" alt=""/>
+    <img class="ce-tab-icon ce-menu-image" src="${chrome.runtime.getURL('images/message.png')}" alt=""/>
     <span>Chats</span>
   </button>
 
@@ -205,7 +208,10 @@
            ======================================================== -->
       <section class="ce-view active" data-view="chats">
         <div class="ce-view-heading">
-          <h2>💬 Conversations</h2>
+          <h2>
+          <img src="${chrome.runtime.getURL('images/conversation.png')}" class="ce-heading-icon" alt="">
+          Conversations
+          </h2>
           <span class="ce-view-badge">Indigo Theme</span>
         </div>
 
@@ -261,7 +267,11 @@
            ======================================================== -->
       <section class="ce-view" data-view="media">
         <div class="ce-view-heading">
-          <h2>🖼 Media Gallery</h2>
+          <h2>
+          <img src="${chrome.runtime.getURL('images/gallery.png')}"
+           class="ce-heading-icon" alt="">
+           Media Gallery
+          </h2>
           <span class="ce-view-badge">Rose Theme</span>
         </div>
 
@@ -302,7 +312,10 @@
            ======================================================== -->
       <section class="ce-view" data-view="groups">
         <div class="ce-view-heading">
-          <h2>👥 Workspace Groups</h2>
+          <h2>
+          <img src="${chrome.runtime.getURL('images/workspace.png')}" class="ce-heading-icon" alt="">
+          Workspace Groups
+          </h2>
           <span class="ce-view-badge">Emerald Theme</span>
         </div>
 
@@ -343,7 +356,10 @@
            ======================================================== -->
       <section class="ce-view" data-view="shares">
         <div class="ce-view-heading">
-          <h2>🔗 Saved Links & Shares</h2>
+          <h2>
+          <img src="${chrome.runtime.getURL('images/link.png')}" class="ce-heading-icon" alt="">
+          Saved Links & Shares
+          </h2>
           <span class="ce-view-badge">Sapphire Theme</span>
         </div>
 
@@ -383,7 +399,10 @@
            ======================================================== -->
       <section class="ce-view" data-view="tools">
         <div class="ce-view-heading">
-          <h2>⚡ Power Utilities</h2>
+          <h2>
+          <img src="${chrome.runtime.getURL('images/power.png')}" class="ce-heading-icon" alt="">
+          Power Utilities
+          </h2>
           <span class="ce-view-badge">Amber Theme</span>
         </div>
 
@@ -436,31 +455,54 @@
                 <p>Auto-saves continuously</p>
               </div>
             </div>
-            <textarea id="ce-notes" class="ce-textarea" rows="3" placeholder="Write reminders, code, or ideas..."></textarea>
+            <textarea id="ce-notes" class="ce-textarea" rows="10" placeholder="Write reminders, code, or ideas..."></textarea>
             <div class="ce-row">
               <button class="ce-button ce-button-primary ce-grow" data-action="tools-notes-copy">Copy</button>
               <button class="ce-button ce-grow" data-action="tools-notes-export">Export</button>
             </div>
           </article>
-
-          <!-- 3. Pomodoro Focus Timer Card -->
-          <article class="ce-tool-card">
+          <!-- 3. Custom Focus Timer Card -->
+          <article class="ce-tool-card ce-focus-timer-card">
             <div class="ce-tool-card-header">
               <div class="ce-tool-icon">⏱</div>
               <div>
                 <h3>Focus Timer</h3>
-                <p id="ce-timer-mode-label">Pomodoro (25 min)</p>
+                <p id="ce-timer-mode-label">Custom focus session</p>
               </div>
             </div>
+
             <div id="ce-timer-display" class="ce-timer-clock">25:00</div>
-            <div class="ce-row">
-              <button class="ce-small-button ce-grow" data-action="timer-set-25">25m Work</button>
-              <button class="ce-small-button ce-grow" data-action="timer-set-5">5m Rest</button>
-              <button class="ce-small-button ce-grow" data-action="timer-set-15">15m Break</button>
+
+            <div class="ce-timer-custom">
+              <label for="ce-timer-minutes">Set your time (minutes)</label>
+              <div class="ce-row">
+                <input id="ce-timer-minutes"
+                  class="ce-input ce-grow"
+                  type="number"
+                  min="1"
+                  max="5999"
+                  value="25"
+                  placeholder="Enter minutes">
+
+                <button class="ce-button ce-button-primary"
+                  data-action="timer-apply">Apply</button>
+              </div>
             </div>
-            <div class="ce-row" style="margin-top:4px;">
-              <button class="ce-button ce-button-primary ce-grow" data-action="timer-start">Start</button>
-              <button class="ce-button ce-grow" data-action="timer-reset">Reset</button>
+
+            <div class="ce-row ce-timer-presets">
+              <button class="ce-small-button ce-grow"
+                data-action="timer-set-25">25m Work</button>
+              <button class="ce-small-button ce-grow"
+                data-action="timer-set-5">5m Rest</button>
+              <button class="ce-small-button ce-grow"
+                data-action="timer-set-15">15m Break</button>
+            </div>
+
+            <div class="ce-row">
+              <button class="ce-button ce-button-primary ce-grow"
+                data-action="timer-start">Start</button>
+              <button class="ce-button ce-grow"
+                data-action="timer-reset">Reset</button>
             </div>
           </article>
 
@@ -1237,30 +1279,48 @@
       }
 
       // Tool 4: Dominant Palette & Info Extractor
-      case "tool-media-palette": {
-        if (!data.media.length) {
-          showStatus("No media found. Upload an image first!");
-          return;
-        }
-        const item = data.media[0];
-        extractPaletteFromDataUrl(item.dataUrl, (colors, w, h) => {
-          drawer.classList.remove("ce-hidden");
-          drawer.innerHTML = `
-            <div class="ce-tool-drawer-header">
-              <h4 class="ce-tool-drawer-title">🎨 Color Palette & Info: ${escapeHTML(item.name)}</h4>
-              <button class="ce-tool-drawer-close" data-action="close-drawer">×</button>
-            </div>
-            <p class="ce-muted">Dimensions: <strong>${w} × ${h} px</strong> | Click swatch to copy HEX code:</p>
-            <div class="ce-palette-container">
-              ${colors.map((c) => `
-                <div class="ce-palette-swatch" style="background:${c};" title="Click to copy ${c}" data-action="copy-hex" data-hex="${c}"></div>
-              `).join("")}
-            </div>
-            <p class="ce-status">Colors: ${colors.join(", ")}</p>
-          `;
-        });
-        break;
-      }
+     // Tool 4: Theme Studio - Preset Theme Colors
+case "tool-media-palette": {
+  const themes = [
+    { id: "violet", name: "Violet Dream", primary: "#8b5cf6", secondary: "#6366f1", accent: "#c084fc" },
+    { id: "pink", name: "Pink Glow", primary: "#ec4899", secondary: "#f43f5e", accent: "#f9a8d4" },
+    { id: "blue", name: "Ocean Blue", primary: "#3b82f6", secondary: "#06b6d4", accent: "#7dd3fc" },
+    { id: "green", name: "Emerald", primary: "#10b981", secondary: "#059669", accent: "#6ee7b7" },
+    { id: "orange", name: "Sunset Orange", primary: "#f97316", secondary: "#ef4444", accent: "#fdba74" }
+  ];
+
+  const savedTheme = localStorage.getItem("ce-selected-theme") || "violet";
+
+  drawer.classList.remove("ce-hidden");
+  drawer.innerHTML = `
+    <div class="ce-tool-drawer-header">
+      <h4 class="ce-tool-drawer-title">🎨 Theme Studio</h4>
+      <button class="ce-tool-drawer-close" data-action="close-drawer">×</button>
+    </div>
+
+    <p class="ce-muted">Choose a color theme for your workspace.</p>
+
+    <div class="ce-theme-grid">
+      ${themes.map(theme => `
+        <button
+          type="button"
+          class="ce-theme-option ${savedTheme === theme.id ? "selected" : ""}"
+          data-action="theme-preset"
+          data-theme="${theme.id}"
+          style="--theme-primary:${theme.primary};--theme-secondary:${theme.secondary};--theme-accent:${theme.accent}">
+          <span class="ce-theme-preview">
+            <span></span><span></span><span></span>
+          </span>
+          <span class="ce-theme-name">${theme.name}</span>
+          <span class="ce-theme-check">${savedTheme === theme.id ? "✓ Selected" : "Select theme"}</span>
+        </button>
+      `).join("")}
+    </div>
+
+    <p class="ce-status">Select a preset to customize your workspace colors.</p>
+  `;
+  break;
+}
 
       // Tool 5: Save All Images
       case "tool-media-download-all": {
@@ -1630,19 +1690,45 @@
         showStatus("✓ Notes downloaded.");
         break;
 
-      // 3. Focus Timer
+      // 3. Custom Focus Timer
+      case "timer-apply": {
+        const input = $("#ce-timer-minutes");
+        const minutes = Number(input.value);
+
+        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 5999) {
+          showStatus("Enter a whole number from 1 to 5999 minutes.");
+          input.focus();
+          break;
+        }
+
+        setTimer(minutes * 60, `Custom focus (${minutes} min)`);
+        showStatus(`Timer set to ${minutes} minutes.`);
+        break;
+      }
+
       case "timer-set-25":
-        setTimer(25 * 60, "Pomodoro (25 min)");
+        $("#ce-timer-minutes").value = 25;
+        setTimer(25 * 60, "Focus session (25 min)");
         break;
+
       case "timer-set-5":
-        setTimer(5 * 60, "Short Rest (5 min)");
+        $("#ce-timer-minutes").value = 5;
+        setTimer(5 * 60, "Short rest (5 min)");
         break;
+
       case "timer-set-15":
-        setTimer(15 * 60, "Long Break (15 min)");
+        $("#ce-timer-minutes").value = 15;
+        setTimer(15 * 60, "Long break (15 min)");
         break;
 
       case "timer-start": {
-        const btn = $(`[data-action="timer-start"]`);
+        const btn = $('[data-action="timer-start"]');
+
+        if (focusSeconds <= 0) {
+          showStatus("Please set the timer again.");
+          break;
+        }
+
         if (focusInterval) {
           clearInterval(focusInterval);
           focusInterval = null;
@@ -1652,69 +1738,45 @@
           focusInterval = setInterval(() => {
             focusSeconds = Math.max(0, focusSeconds - 1);
             updateTimerDisplay();
+
             if (focusSeconds === 0) {
               clearInterval(focusInterval);
               focusInterval = null;
               btn.textContent = "Start";
               playBeepSound();
-              showStatus("🔔 Focus session complete! Time for a break.");
-              alert("🔔 Focus session complete! Great work.");
+              showStatus("Focus session complete!");
+              alert("Focus session complete! Great work.");
             }
           }, 1000);
+
           btn.textContent = "Pause";
           showStatus("Timer running.");
         }
+
         break;
       }
 
-      case "timer-reset":
-        if (focusInterval) clearInterval(focusInterval);
-        focusInterval = null;
-        focusSeconds = 25 * 60;
-        updateTimerDisplay();
-        const startBtn = $(`[data-action="timer-start"]`);
-        if (startBtn) startBtn.textContent = "Start";
-        showStatus("Timer reset to 25m.");
-        break;
-
-      // 4. Text Toolbox
-      case "text-count": {
-        const text = $("#ce-text-tool").value;
-        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-        const lines = text ? text.split(/\r\n|\r|\n/).length : 0;
-        $("#ce-text-result").textContent = `${words} words | ${text.length} chars | ${lines} lines`;
-        break;
-      }
-      case "text-upper":
-        $("#ce-text-tool").value = $("#ce-text-tool").value.toUpperCase();
-        $("#ce-text-result").textContent = "Transformed to UPPERCASE";
-        break;
-      case "text-lower":
-        $("#ce-text-tool").value = $("#ce-text-tool").value.toLowerCase();
-        $("#ce-text-result").textContent = "Transformed to lowercase";
-        break;
-      case "text-title":
-        $("#ce-text-tool").value = $("#ce-text-tool").value.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-        $("#ce-text-result").textContent = "Transformed to Title Case";
-        break;
-      case "text-slug":
-        $("#ce-text-tool").value = $("#ce-text-tool").value.toLowerCase().trim()
-          .replace(/[^a-z0-9 -]/g, "")
-          .replace(/\s+/g, "-")
-          .replace(/-+/g, "-");
-        $("#ce-text-result").textContent = "Generated kebab-case slug";
-        break;
-      case "text-base64": {
-        const text = $("#ce-text-tool").value;
-        try {
-          $("#ce-text-tool").value = btoa(unescape(encodeURIComponent(text)));
-          $("#ce-text-result").textContent = "Encoded to Base64";
-        } catch {
-          $("#ce-text-result").textContent = "Base64 encoding error.";
+      case "timer-reset": {
+        if (focusInterval) {
+          clearInterval(focusInterval);
+          focusInterval = null;
         }
+
+        const minutes = Number($("#ce-timer-minutes").value);
+        const validMinutes =
+          Number.isInteger(minutes) && minutes >= 1 && minutes <= 5999
+            ? minutes
+            : 25;
+
+        focusSeconds = validMinutes * 60;
+        updateTimerDisplay();
+
+        const btn = $('[data-action="timer-start"]');
+        if (btn) btn.textContent = "Start";
+
+        showStatus(`Timer reset to ${validMinutes} minutes.`);
         break;
       }
-
       // 5. Page Inspector & Snapshot
       case "tools-page-inspect": {
         const title = document.title || "(Untitled)";
@@ -1749,15 +1811,26 @@
       }
     }
   }
-
   function setTimer(seconds, label) {
-    if (focusInterval) clearInterval(focusInterval);
-    focusInterval = null;
+    if (focusInterval) {
+      clearInterval(focusInterval);
+      focusInterval = null;
+    }
+
     focusSeconds = seconds;
-    $("#ce-timer-mode-label").textContent = label;
+    focusMode = "custom";
+
+    const labelElement = $("#ce-timer-mode-label");
+    if (labelElement) {
+      labelElement.textContent = label;
+    }
+
     updateTimerDisplay();
-    const btn = $(`[data-action="timer-start"]`);
-    if (btn) btn.textContent = "Start";
+
+    const btn = $('[data-action="timer-start"]');
+    if (btn) {
+      btn.textContent = "Start";
+    }
   }
 
   function updateTimerDisplay() {
@@ -1850,23 +1923,62 @@
       return;
     }
 
-    // Menu 5-Tool triggers
-    if (action.startsWith("tool-chat-")) {
-      executeChatTool(action);
-      return;
+    
+if (action === "theme-preset") {
+  const presets = {
+    violet: {
+      primary: "#8b5cf6",
+      secondary: "#6366f1",
+      accent: "#c084fc"
+    },
+    pink: {
+      primary: "#ec4899",
+      secondary: "#f43f5e",
+      accent: "#f9a8d4"
+    },
+    blue: {
+      primary: "#3b82f6",
+      secondary: "#06b6d4",
+      accent: "#7dd3fc"
+    },
+    green: {
+      primary: "#10b981",
+      secondary: "#059669",
+      accent: "#6ee7b7"
+    },
+    orange: {
+      primary: "#f97316",
+      secondary: "#ef4444",
+      accent: "#fdba74"
     }
-    if (action.startsWith("tool-media-")) {
-      executeMediaTool(action);
-      return;
+  };
+
+  const selectedTheme = btn.dataset.theme;
+  const preset = presets[selectedTheme];
+
+  if (!preset) return;
+
+  localStorage.setItem("ce-selected-theme", selectedTheme);
+
+  root.style.setProperty("--theme-primary", preset.primary);
+  root.style.setProperty("--theme-secondary", preset.secondary);
+  root.style.setProperty("--theme-accent", preset.accent);
+  root.dataset.accentTheme = selectedTheme;
+
+  root.querySelectorAll(".ce-theme-option").forEach((option) => {
+    const selected = option.dataset.theme === selectedTheme;
+    option.classList.toggle("selected", selected);
+
+    const check = option.querySelector(".ce-theme-check");
+    if (check) {
+      check.textContent = selected ? "✓ Selected" : "Select theme";
     }
-    if (action.startsWith("tool-group-")) {
-      executeGroupTool(action);
-      return;
-    }
-    if (action.startsWith("tool-share-")) {
-      executeShareTool(action);
-      return;
-    }
+  });
+
+  showStatus("Theme changed to " + selectedTheme + ".");
+  return;
+}
+
 
     // Tools menu actions
     if (action.startsWith("tools-") || action.startsWith("timer-") || action.startsWith("text-")) {
@@ -2278,11 +2390,11 @@
   $("#ce-group-search").addEventListener("input", renderGroups);
   $("#ce-share-search").addEventListener("input", renderShares);
 
-  // Quick notes auto-save
-  $("#ce-notes").addEventListener("input", (e) => {
-    data.notes = e.target.value;
-    saveData();
-  });
+ // Quick notes auto-save
+$("#ce-notes").addEventListener("input", (e) => {
+  data.notes = e.target.value;
+  saveData();
+});
 
   // -------------------------------------------------------------
   // NATIVE DRAG & DROP FOR CHAT & MEDIA (YOUTUBE & WEB LINKS)
